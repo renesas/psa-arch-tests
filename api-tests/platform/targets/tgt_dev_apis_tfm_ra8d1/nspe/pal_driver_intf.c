@@ -20,6 +20,8 @@
 #include "pal_nvmem.h"
 #include "pal_wd_cmsdk.h"
 
+int32_t tfm_platform_system_reset(void);
+
 /**
     @brief    - This function initializes the UART
     @param    - uart base addr
@@ -27,7 +29,7 @@
 **/
 int pal_uart_init_ns(uint32_t uart_base_addr)
 {
-    pal_uart_cmsdk_init(uart_base_addr);
+	pal_uart_ra8d1_init(uart_base_addr);
     return PAL_STATUS_SUCCESS;
 }
 
@@ -40,7 +42,7 @@ int pal_uart_init_ns(uint32_t uart_base_addr)
 
 int pal_print_ns(const char *str, int32_t data)
 {
-    pal_cmsdk_print(str, data);
+	pal_ra8d1_print(str, data);
     return PAL_STATUS_SUCCESS;
 }
 
@@ -86,7 +88,7 @@ int pal_wd_timer_disable_ns(addr_t base_addr)
 **/
 int pal_nvmem_read_ns(addr_t base, uint32_t offset, void *buffer, int size)
 {
-    if (nvmem_read(base, offset, buffer, size))
+    if (nvmem_ra8d1_read(base, offset, buffer, size))
     {
         return PAL_STATUS_SUCCESS;
     }
@@ -106,7 +108,7 @@ int pal_nvmem_read_ns(addr_t base, uint32_t offset, void *buffer, int size)
 **/
 int pal_nvmem_write_ns(addr_t base, uint32_t offset, void *buffer, int size)
 {
-    if (nvmem_write(base, offset, buffer, size))
+    if (nvmem_ra8d1_write(base, offset, buffer, size))
     {
         return PAL_STATUS_SUCCESS;
     }
@@ -139,6 +141,5 @@ void pal_terminate_simulation(void)
 **/
 int pal_system_reset(void)
 {
-    /* Reset functionality is not functional on AN521 FVP */
-    return PAL_STATUS_UNSUPPORTED_FUNC;
+    return tfm_platform_system_reset();
 }
