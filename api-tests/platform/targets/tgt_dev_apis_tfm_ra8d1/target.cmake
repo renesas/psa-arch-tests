@@ -27,19 +27,24 @@ list(APPEND PAL_SRC_C_DRIVER_SP )
 # PAL ASM source files part of SPE library - driver partition
 list(APPEND PAL_SRC_ASM_DRIVER_SP )
 
+add_compile_definitions(_RA_TZ_NONSECURE)
+
 # Listing all the sources required for given target
 if(${SUITE} STREQUAL "IPC")
-	message(FATAL_ERROR "For IPC - use -DTARGET=tgt_ff_tfm_an521 instead")
+	message(FATAL_ERROR "IPC not supported for ${TARGET}, use -DTARGET=tgt_ff_tfm_ra8d1 instead")
 else()
 	list(APPEND PAL_SRC_C_NSPE
 		# driver files will be compiled as part of NSPE
 		${PSA_ROOT_DIR}/platform/targets/${TARGET}/nspe/pal_driver_intf.c
-		${PSA_ROOT_DIR}/platform/drivers/nvmem/pal_nvmem.c
-		${PSA_ROOT_DIR}/platform/drivers/uart/cmsdk/pal_uart.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/nvmem/pal_nvmem.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/uart/pal_uart.c
 		${PSA_ROOT_DIR}/platform/drivers/watchdog/cmsdk/pal_wd_cmsdk.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/r_ioport/r_ioport.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/r_sci_b_uart/r_sci_b_uart.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
+		${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/bsp/mcu/all/bsp_io.c
 	)
 endif()
-
 if(${SUITE} STREQUAL "CRYPTO")
 	list(APPEND PAL_SRC_C_NSPE
 		${PSA_ROOT_DIR}/platform/targets/common/nspe/crypto/pal_crypto_intf.c
@@ -75,9 +80,27 @@ foreach(psa_inc_path ${PSA_INCLUDE_PATHS})
 endforeach()
 
 list(APPEND PAL_DRIVER_INCLUDE_PATHS
-	${PSA_ROOT_DIR}/platform/drivers/nvmem
-	${PSA_ROOT_DIR}/platform/drivers/uart/cmsdk
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/nvmem
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/uart
 	${PSA_ROOT_DIR}/platform/drivers/watchdog/cmsdk
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/arm/CMSIS_5/CMSIS/Core/Include
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/board/ra8d1_ek
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/CMSIS/Core/Include
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/Device/Config
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra_cfg/fsp_cfg
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra_cfg/fsp_cfg/bsp
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/Device/Include
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/Device/Source
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/inc
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/inc/api
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/inc/instances
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/bsp/mcu/all
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/bsp/mcu/ra8d1
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/r_ioport
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/r_sci_b_uart
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra/fsp/src/r_flash_hp
+	${PSA_ROOT_DIR}/platform/targets/tgt_dev_apis_tfm_ra8d1/drivers/ra_gen
 )
 
 target_include_directories(${PSA_TARGET_PAL_NSPE_LIB} PRIVATE
