@@ -16,8 +16,6 @@
 **/
 
 #include "pal_uart.h"
-#include "platform_base_address.h"
-#include "stdio.h" //del
 
 #ifndef ARG_UNUSED
 #define ARG_UNUSED(arg)  (void)arg
@@ -26,72 +24,10 @@
 static volatile uint8_t tx_data_empty_test = 1;
 static volatile uint8_t tx_irq_triggered_test = 0;
 
-static sci_b_uart_instance_ctrl_t g_uart0_ctrl;
 
-static sci_b_baud_setting_t g_uart0_baud_setting =
-        {
-        /* Baud rate calculated with 0.160% error. */.baudrate_bits_b.abcse = 0,
-          .baudrate_bits_b.abcs = 1, .baudrate_bits_b.bgdm = 1, .baudrate_bits_b.cks = 0, .baudrate_bits_b.brr = 12, .baudrate_bits_b.mddr =
-                  (uint8_t) 256,
-          .baudrate_bits_b.brme = false };
+extern const uart_instance_t g_uart0;
 
-/** UART extended configuration for UARTonSCI HAL driver */
-const sci_b_uart_extended_cfg_t g_uart0_cfg_extend =
-{ .clock = SCI_B_UART_CLOCK_INT, 
-  .rx_edge_start = SCI_B_UART_START_BIT_FALLING_EDGE, 
-  .noise_cancel = SCI_B_UART_NOISE_CANCELLATION_DISABLE,
-  .rx_fifo_trigger = SCI_B_UART_RX_FIFO_TRIGGER_MAX, 
-  .p_baud_setting = &g_uart0_baud_setting, 
-  .flow_control = SCI_B_UART_FLOW_CONTROL_RTS,
-  .flow_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
-  .rs485_setting =
-  { .enable = SCI_B_UART_RS485_DISABLE,
-    .polarity = SCI_B_UART_RS485_DE_POLARITY_HIGH,
-    .assertion_time = 1,
-    .negation_time = 1, } 
-};
 
-/** UART interface configuration */
-static uart_cfg_t g_uart0_cfg =
-{ .channel = 2, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
-          user_uart_callback,
-  .p_context = NULL, .p_extend = &g_uart0_cfg_extend,
-
-  .p_transfer_tx = NULL,
-  .p_transfer_rx = NULL,
-  .rxi_ipl = (12),
-  .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12),
-  .rxi_irq = VECTOR_NUMBER_SCI2_RXI,
-  .txi_irq = VECTOR_NUMBER_SCI2_TXI,
-  .tei_irq = VECTOR_NUMBER_SCI2_TEI,
-  .eri_irq = VECTOR_NUMBER_SCI2_ERI,
-};
-
- /* Instance structure to use this module. */
-const uart_instance_t g_uart0 =
-{ .p_ctrl = &g_uart0_ctrl, .p_cfg = &g_uart0_cfg, .p_api = &g_uart_on_sci_b };
-
-// static ioport_instance_ctrl_t g_ioport_ctrl;
-// static const ioport_pin_cfg_t g_bsp_pin_cfg_data[] =
-//         {
-//         { .pin = BSP_IO_PORT_02_PIN_08, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                 | (uint32_t) IOPORT_PERIPHERAL_DEBUG) },
-//           { .pin = BSP_IO_PORT_02_PIN_09, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                   | (uint32_t) IOPORT_PERIPHERAL_DEBUG) },
-//           { .pin = BSP_IO_PORT_02_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                   | (uint32_t) IOPORT_PERIPHERAL_DEBUG) },
-//           { .pin = BSP_IO_PORT_02_PIN_11, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                   | (uint32_t) IOPORT_PERIPHERAL_DEBUG) },
-//           { .pin = BSP_IO_PORT_10_PIN_02, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                   | (uint32_t) IOPORT_PERIPHERAL_SCI0_2_4_6_8) },
-//           { .pin = BSP_IO_PORT_10_PIN_03, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-//                   | (uint32_t) IOPORT_PERIPHERAL_SCI0_2_4_6_8) }, };
-
-// static const ioport_cfg_t g_bsp_pin_cfg =
-// { 
-//   .number_of_pins = sizeof(g_bsp_pin_cfg_data) / sizeof(ioport_pin_cfg_t), 
-//   .p_pin_cfg_data = &g_bsp_pin_cfg_data[0]
-// };
 
 /**
     @brief    - This function initializes the UART
@@ -100,9 +36,8 @@ const uart_instance_t g_uart0 =
 void pal_uart_ra8d1_init(uint32_t uart_base_addr)
 {
 	ARG_UNUSED(uart_base_addr);
-    // R_IOPORT_Open(&g_ioport_ctrl, &g_bsp_pin_cfg);
 
-    R_SCI_B_UART_Open(g_uart0.p_ctrl, g_uart0.p_cfg);
+    g_uart0.p_api->open(g_uart0.p_ctrl, g_uart0.p_cfg);
 
 }
 
@@ -120,14 +55,14 @@ static int pal_uart_ra8d1_is_tx_empty(void)
 **/
 void pal_uart_ra8d1_putc(uint8_t c)
 {
-    //uint32_t bytes = 1U;
+    uint32_t bytes = 1U;
     
     /* ensure TX buffer to be empty */
     /* write the data (upper 24 bits are reserved) */
     while (!pal_uart_ra8d1_is_tx_empty());
-    //tx_data_empty_test = 0U;
-    printf("%c", ((char)c)); //del
-    //R_SCI_B_UART_Write(g_uart0.p_ctrl, &c, bytes);
+    tx_data_empty_test = 0U;
+
+    g_uart0.p_api->write(g_uart0.p_ctrl, &c, bytes);
 	
 }
 
@@ -136,7 +71,7 @@ void pal_uart_ra8d1_putc(uint8_t c)
     @param    - str      : Input String
               - data     : Value for format specifier
 **/
-void pal_ra8d1_print(const char *str, int32_t data)
+void __attribute__((weak)) pal_ra8d1_print(const char *str, int32_t data)
 {
     uint8_t j, buffer[16];
     int8_t  i = 0, is_neg = 0, k = 2 * sizeof(data);
