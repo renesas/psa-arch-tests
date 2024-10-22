@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
- * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
- * sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for the selection and use
- * of Renesas products and Renesas assumes no liability.  No license, express or implied, to any intellectual property
- * right is granted by Renesas. This software is protected under all applicable laws, including copyright laws. Renesas
- * reserves the right to change or discontinue this software and/or this documentation. THE SOFTWARE AND DOCUMENTATION
- * IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND TO THE FULLEST EXTENT
- * PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY, INCLUDING WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE SOFTWARE OR
- * DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.  TO THE MAXIMUM
- * EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR DOCUMENTATION
- * (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER, INCLUDING,
- * WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY LOST PROFITS,
- * OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE POSSIBILITY
- * OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /* Ensure Renesas MCU variation definitions are included to ensure MCU
  * specific register variations are handled correctly. */
@@ -56,8 +42,12 @@ extern "C" {
 /* ================                           Processor and Core Peripheral Section                           ================ */
 /* =========================================================================================================================== */
 
- #if BSP_MCU_GROUP_RA2A1
+ #if BSP_MCU_GROUP_RA0E1
+  #include "R7FA0E107.h"
+ #elif BSP_MCU_GROUP_RA2A1
   #include "R7FA2A1AB.h"
+ #elif BSP_MCU_GROUP_RA2A2
+  #include "R7FA2A2AD.h"
  #elif BSP_MCU_GROUP_RA2E1
   #include "R7FA2E1A9.h"
  #elif BSP_MCU_GROUP_RA2E2
@@ -102,6 +92,12 @@ extern "C" {
   #include "R7FA6T3BB.h"
  #elif BSP_MCU_GROUP_RA8M1
   #include "R7FA8M1AH.h"
+ #elif BSP_MCU_GROUP_RA8D1
+  #include "R7FA8D1BH.h"
+ #elif BSP_MCU_GROUP_RA8T1
+  #include "R7FA8T1AH.h"
+ #elif BSP_MCU_GROUP_RA8E1
+  #include "R7FA8E1AF.h"
  #else
   #if __has_include("renesas_internal.h")
    #include "renesas_internal.h"
@@ -110,21 +106,36 @@ extern "C" {
   #endif
  #endif
 
-/* Workaround for compilers that are not defining __ARM_ARCH_8_1M_MAIN__ for CM85 parts. */
- #if BSP_CFG_MCU_PART_SERIES == 8
-  #undef __ARM_ARCH_8M_MAIN__
-  #define __ARM_ARCH_8_1M_MAIN__    1
+/*
+ * ARM has advised to no longer use the __ARM_ARCH_8_1M_MAIN__ type macro and to instead use the __ARM_ARCH and __ARM_ARCH_ISA_THUMB
+ * macros for differentiating architectures. However, with all of our toolchains, neither paradigm is being correctly produced for Cortex-M85
+ * and thus we still need a workaround. Below is a summary of the current macros produced by each toolchain for CM85:
+ *
+ * | Toolchain | __ARM_ARCH |     _ARM_ARCH_xx__     |
+ * |-----------|------------|------------------------|
+ * |   GCC     |      8     | __ARM_ARCH_8M_MAIN__   |
+ * |   LLVM    |      8     | __ARM_ARCH_8_1M_MAIN__ |
+ * |   AC6     |      8     | __ARM_ARCH_8_1M_MAIN__ |
+ * |   IAR     |     801    | __ARM_ARCH_8M_MAIN__   |
+ *
+ * The expected output for CM85 should be __ARM_ARCH == 801, __ARM_ARCH_ISA_THUMB == 2, and __ARM_ARCH_8_1M_MAIN__
+ *
+ * IAR is currently the only toolchain producing the correct __ARM_ARCH value.
+ *
+ *- See https://github.com/ARM-software/CMSIS_6/issues/159
+ */
+ #if BSP_CFG_MCU_PART_SERIES == 8 && !defined(__ICCARM__) && BSP_CFG_CPU_CORE != 1
+  #undef __ARM_ARCH
+  #define __ARM_ARCH    801
  #endif
 
- #if   __ARM_ARCH_7EM__
+ #if   (__ARM_ARCH == 7) && (__ARM_ARCH_ISA_THUMB == 2)
   #define RENESAS_CORTEX_M4
- #elif __ARM_ARCH_6M__
-  #define RENESAS_CORTEX_M0PLUS
- #elif __ARM_ARCH_8M_BASE__
+ #elif (__ARM_ARCH == 8) && (__ARM_ARCH_ISA_THUMB == 1)
   #define RENESAS_CORTEX_M23
- #elif __ARM_ARCH_8M_MAIN__
+ #elif (__ARM_ARCH == 8) && (__ARM_ARCH_ISA_THUMB == 2)
   #define RENESAS_CORTEX_M33
- #elif __ARM_ARCH_8_1M_MAIN__
+ #elif (__ARM_ARCH == 801) && (__ARM_ARCH_ISA_THUMB == 2)
   #define RENESAS_CORTEX_M85
  #else
   #warning Unsupported Architecture

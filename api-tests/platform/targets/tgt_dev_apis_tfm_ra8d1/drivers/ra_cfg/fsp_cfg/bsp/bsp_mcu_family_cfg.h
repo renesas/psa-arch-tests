@@ -24,10 +24,25 @@
                 #error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
             #endif
 
-#define BSP_CFG_FLL_ENABLE                 (0)
+#define BSP_CFG_FLL_ENABLE                   (0)
+
+#define BSP_CFG_CLOCK_SETTLING_DELAY_ENABLE  (1)
+#define BSP_CFG_SLEEP_MODE_DELAY_ENABLE      (1)
+#define BSP_CFG_MSTP_CHANGE_DELAY_ENABLE     (1)
+#define BSP_CFG_RTOS_IDLE_SLEEP              (0)
+#define BSP_CFG_CLOCK_SETTLING_DELAY_US      (150)
+
+#if defined(BSP_PACKAGE_LQFP) && (BSP_PACKAGE_PINS == 100)
+                #define BSP_MAX_CLOCK_CHANGE_THRESHOLD (180000000U)
+            #elif defined(BSP_PACKAGE_LQFP)
+                #define BSP_MAX_CLOCK_CHANGE_THRESHOLD (200000000U)
+            #else
+#define BSP_MAX_CLOCK_CHANGE_THRESHOLD (240000000U)
+#endif
 
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES       (112U)
+#define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
 
 #if defined(_RA_TZ_SECURE)
             #define BSP_TZ_SECURE_BUILD           (1)
@@ -94,11 +109,11 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 11) /* SDHI1 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 12) /* SDHI0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 13) /* DOC */ | \
-            (1 << 15) /* GLCDC/MIPI-DSI/DRW */ | \
+            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 15) /* GLCDC/MIPI-DSI/DRW */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* CEU */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 26) /* CANFD1 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 27) /* CANFD0 */ | \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* RSIP7 */)
+            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* RSIP-E51A */)
 #endif
 #ifndef BSP_TZ_CFG_PSARD
 #define BSP_TZ_CFG_PSARD (\
@@ -147,7 +162,7 @@
 
 /* Security attribution for RSTSRn registers. */
 #ifndef BSP_TZ_CFG_RSTSAR
-#define BSP_TZ_CFG_RSTSAR (0x0000000FU)
+#define BSP_TZ_CFG_RSTSAR (0x00000007U)
 #endif
 
 /* Security attribution for registers of LVD channels. */
@@ -195,7 +210,20 @@
 
 /* Security attribution for Battery Backup registers. */
 #ifndef BSP_TZ_CFG_BBFSAR
-#define BSP_TZ_CFG_BBFSAR (0x0000001FU)
+#if 0
+#define BSP_TZ_CFG_BBFSAR   (0U)
+#else
+#define BSP_TZ_CFG_BBFSAR   (0x1FU)
+#endif
+#endif
+
+/* Security attribution for Battery Backup registers (VBTBKRn). */
+#ifndef BSP_TZ_CFG_VBRSABAR
+#if 0
+#define BSP_TZ_CFG_VBRSABAR (0xFFE0)
+#else
+#define BSP_TZ_CFG_VBRSABAR (0xED00)
+#endif
 #endif
 
 /* Security attribution for registers for IRQ channels. */
@@ -221,7 +249,7 @@
 
 /* Security attribution for NMI registers. */
 #ifndef BSP_TZ_CFG_ICUSARB
-#define BSP_TZ_CFG_ICUSARB (0 | 0xFFFFFFFEU) /* Should match AIRCR.BFHFNMINS. */
+#define BSP_TZ_CFG_ICUSARB (0 | 0U) /* Should match AIRCR.BFHFNMINS. */
 #endif
 
 /* Security attribution for registers for DMAC channels */
@@ -270,10 +298,10 @@
  * reason for nonsecure applications to access FLWT and FCKMHZ. */
 #define BSP_TZ_CFG_FSAR (\
         ((BSP_CFG_CLOCKS_SECURE == 0) ? (1U << 0) : 0U) | /* FLWTSA */\
-        ((RA_NOT_DEFINED) > 0 ? 0U: (1U << 1)) | /* FCACHESA */\
+        ((1) > 0 ? 0U: (1U << 1)) | /* FCACHESA */\
         ((BSP_CFG_CLOCKS_SECURE == 0) ? (1U << 8) : 0U) | /* FCKMHZSA */ \
-        ((RA_NOT_DEFINED) > 0 ? 0U : (1U << 9U)) | /* FACICMISA */\
-        ((RA_NOT_DEFINED) > 0 ? 0U: (1U << 10U)) /* FACICMRSA */)
+        ((1) > 0 ? 0U : (1U << 9U)) | /* FACICMISA */\
+        ((1) > 0 ? 0U: (1U << 10U)) /* FACICMRSA */)
 #endif
 
 /* Security attribution for SRAM registers. */
@@ -435,111 +463,67 @@
 #define BSP_CFG_ROM_REG_SAMR (0xFFFFFFFF)
 #endif
 
-/* Hash of OEM_ROOT_PK Register */
-#ifndef BSP_CFG_ROM_REG_HOEMRTPK
-#define BSP_CFG_ROM_REG_HOEMRTPK (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 0 Lock Bit Register 0 */
-#ifndef BSP_CFG_ROM_REG_CFGD0LOCK0
-#define BSP_CFG_ROM_REG_CFGD0LOCK0 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 0 Lock Bit Register 1 */
-#ifndef BSP_CFG_ROM_REG_CFGD0LOCK1
-#define BSP_CFG_ROM_REG_CFGD0LOCK1 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 1 Lock Bit Register 0 */
-#ifndef BSP_CFG_ROM_REG_CFGD1LOCK0
-#define BSP_CFG_ROM_REG_CFGD1LOCK0 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 1 Lock Bit Register 1 */
-#ifndef BSP_CFG_ROM_REG_CFGD1LOCK1
-#define BSP_CFG_ROM_REG_CFGD1LOCK1 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 2 Lock Bit Register */
-#ifndef BSP_CFG_ROM_REG_CFGD2LOCK
-#define BSP_CFG_ROM_REG_CFGD2LOCK (RA_NOT_DEFINED)
-#endif
-
-/* Anti-Rollback Counter Lock Setting Register */
-#ifndef BSP_CFG_ROM_REG_ARCLS
-#define BSP_CFG_ROM_REG_ARCLS ( \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCS_LK_Pos) | \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCNS_LK_Pos) | \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCBL_LK_Pos) | \
-            0xFFC0)
-#endif
-
-/* Anti-Rollback Counter Configuration Setting for Non-secure Application Register */
-#ifndef BSP_CFG_ROM_REG_ARCCS
-#define BSP_CFG_ROM_REG_ARCCS (RA_NOT_DEFINED | 0xFFFC)
-#endif
-
-/* Anti-Rollback Counter for Secure Application 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_SEC0
-#define BSP_CFG_ROM_REG_ARC_SEC0              (0U)
-#endif
-
-/* Anti-Rollback Counter for Secure Application 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_SEC1
-#define BSP_CFG_ROM_REG_ARC_SEC1              (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC0
-#define BSP_CFG_ROM_REG_ARC_NSEC0             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC1
-#define BSP_CFG_ROM_REG_ARC_NSEC1             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 2 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC2
-#define BSP_CFG_ROM_REG_ARC_NSEC2             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 3 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC3
-#define BSP_CFG_ROM_REG_ARC_NSEC3             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 4 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC4
-#define BSP_CFG_ROM_REG_ARC_NSEC4             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 5 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC5
-#define BSP_CFG_ROM_REG_ARC_NSEC5             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 6 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC6
-#define BSP_CFG_ROM_REG_ARC_NSEC6             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 7 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC7
-#define BSP_CFG_ROM_REG_ARC_NSEC7             (0U)
-#endif
-
-/* Anti-Rollback Counter for OEMBL 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_OEMBL0
-#define BSP_CFG_ROM_REG_ARC_OEMBL0            (0U)
-#endif
-
-/* Anti-Rollback Counter for OEMBL 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_OEMBL1
-#define BSP_CFG_ROM_REG_ARC_OEMBL1            (0U)
-#endif
-
 #ifndef BSP_CFG_DCACHE_ENABLED
 #define BSP_CFG_DCACHE_ENABLED (0)
+#endif
+
+#ifndef BSP_CFG_SDRAM_ENABLED
+#define BSP_CFG_SDRAM_ENABLED  (0)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRAS
+#define BSP_CFG_SDRAM_TRAS  (6)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRCD
+#define BSP_CFG_SDRAM_TRCD  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRP
+#define BSP_CFG_SDRAM_TRP  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TWR
+#define BSP_CFG_SDRAM_TWR  (2)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TCL
+#define BSP_CFG_SDRAM_TCL  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRFC
+#define BSP_CFG_SDRAM_TRFC  (937)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TREFW
+#define BSP_CFG_SDRAM_TREFW  (8)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_ARFI
+#define BSP_CFG_SDRAM_INIT_ARFI  (10)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_ARFC
+#define BSP_CFG_SDRAM_INIT_ARFC  (8)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_PRC
+#define BSP_CFG_SDRAM_INIT_PRC  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT
+#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT  (1)
+#endif
+
+#ifndef BSP_CFG_SDRAM_ENDIAN_MODE
+#define BSP_CFG_SDRAM_ENDIAN_MODE  (0)
+#endif
+
+#ifndef BSP_CFG_SDRAM_ACCESS_MODE
+#define BSP_CFG_SDRAM_ACCESS_MODE  (1)
+#endif
+
+#ifndef BSP_CFG_SDRAM_BUS_WIDTH
+#define BSP_CFG_SDRAM_BUS_WIDTH  (0)
 #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

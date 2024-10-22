@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
- * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
- * sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for the selection and use
- * of Renesas products and Renesas assumes no liability.  No license, express or implied, to any intellectual property
- * right is granted by Renesas. This software is protected under all applicable laws, including copyright laws. Renesas
- * reserves the right to change or discontinue this software and/or this documentation. THE SOFTWARE AND DOCUMENTATION
- * IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND TO THE FULLEST EXTENT
- * PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY, INCLUDING WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE SOFTWARE OR
- * DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.  TO THE MAXIMUM
- * EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR DOCUMENTATION
- * (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER, INCLUDING,
- * WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY LOST PROFITS,
- * OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE POSSIBILITY
- * OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU_RA8D1
@@ -38,39 +24,28 @@
 
 /* Define overrides required for this MCU. */
 
-#define BSP_OVERRIDE_ELC_PERIPHERAL_T
+#define BSP_OVERRIDE_CGC_SYS_CLOCK_DIV_T
 #define BSP_OVERRIDE_GROUP_IRQ_T
-
-/* Override definitions. */
-
-#define ELC_PERIPHERAL_NUM    (30U)
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
-typedef enum e_elc_peripheral
+/** System clock divider values - The individually selectable divider of each of the system clocks, ICLK, BCLK, FCLK,
+ * PCLKS A-D.  */
+typedef enum e_cgc_sys_clock_div
 {
-    ELC_PERIPHERAL_GPT_A   = (0),
-    ELC_PERIPHERAL_GPT_B   = (1),
-    ELC_PERIPHERAL_GPT_C   = (2),
-    ELC_PERIPHERAL_GPT_D   = (3),
-    ELC_PERIPHERAL_GPT_E   = (4),
-    ELC_PERIPHERAL_GPT_F   = (5),
-    ELC_PERIPHERAL_GPT_G   = (6),
-    ELC_PERIPHERAL_GPT_H   = (7),
-    ELC_PERIPHERAL_ADC0    = (8),
-    ELC_PERIPHERAL_ADC0_B  = (9),
-    ELC_PERIPHERAL_ADC1    = (10),
-    ELC_PERIPHERAL_ADC1_B  = (11),
-    ELC_PERIPHERAL_DAC0    = (12),
-    ELC_PERIPHERAL_DAC1    = (13),
-    ELC_PERIPHERAL_IOPORT1 = (14),
-    ELC_PERIPHERAL_IOPORT2 = (15),
-    ELC_PERIPHERAL_IOPORT3 = (16),
-    ELC_PERIPHERAL_IOPORT4 = (17),
-    ELC_PERIPHERAL_I3C     = (30),
-} elc_peripheral_t;
+    CGC_SYS_CLOCK_DIV_1  = 0,          ///< System clock divided by 1
+    CGC_SYS_CLOCK_DIV_2  = 1,          ///< System clock divided by 2
+    CGC_SYS_CLOCK_DIV_4  = 2,          ///< System clock divided by 4
+    CGC_SYS_CLOCK_DIV_8  = 3,          ///< System clock divided by 8
+    CGC_SYS_CLOCK_DIV_16 = 4,          ///< System clock divided by 16
+    CGC_SYS_CLOCK_DIV_32 = 5,          ///< System clock divided by 32
+    CGC_SYS_CLOCK_DIV_64 = 6,          ///< System clock divided by 64
+    CGC_SYS_CLOCK_DIV_3  = 8,          ///< System clock divided by 3
+    CGC_SYS_CLOCK_DIV_6  = 9,          ///< System clock divided by 6
+    CGC_SYS_CLOCK_DIV_12 = 10,         ///< System clock divided by 12
+} cgc_sys_clock_div_t;
 
 /* Which interrupts can have callbacks registered. */
 typedef enum e_bsp_grp_irq
