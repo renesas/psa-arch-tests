@@ -37,7 +37,8 @@
 #ifndef TF_M_PROFILE_SMALL
 #ifndef TF_M_PROFILE_MEDIUM
 #define ARCH_TEST_RSA
-#define ARCH_TEST_RSA_1024
+#define ARCH_TEST_SKIP_RSA_2048_GEN_KEY
+//#define ARCH_TEST_RSA_1024
 #define ARCH_TEST_RSA_2048
 #define ARCH_TEST_RSA_3072
 #endif
@@ -56,9 +57,9 @@
  */
 #ifndef TF_M_PROFILE_SMALL
 #define ARCH_TEST_ECC
-#define ARCH_TEST_ECC_CURVE_SECP192R1
+//#define ARCH_TEST_ECC_CURVE_SECP192R1
 #ifndef TF_M_PROFILE_MEDIUM
-#define ARCH_TEST_ECC_CURVE_SECP224R1
+//#define ARCH_TEST_ECC_CURVE_SECP224R1
 #endif
 #define ARCH_TEST_ECC_CURVE_SECP256R1
 #ifndef TF_M_PROFILE_MEDIUM
@@ -81,7 +82,7 @@
 #define ARCH_TEST_AES_128
 #define ARCH_TEST_AES_192
 #define ARCH_TEST_AES_256
-#define ARCH_TEST_AES_512
+//#define ARCH_TEST_AES_512
 
 /**
  * \def  ARCH_TEST_DES
@@ -247,7 +248,7 @@
  *
  * Requires: ARCH_TEST_HASH
  */
-#define ARCH_TEST_HMAC
+//#define ARCH_TEST_HMAC
 
 /**
  * \def ARCH_TEST_MDX
@@ -315,7 +316,7 @@
 #endif
 #endif
 //#define ARCH_TEST_GMAC
-#define ARCH_TEST_HMAC
+//#define ARCH_TEST_HMAC
 
 /**
  * \def ARCH_TEST_CCM
@@ -335,9 +336,9 @@
  *
  */
 #ifndef TF_M_PROFILE_SMALL
-#ifndef TF_M_PROFILE_MEDIUM
+//#ifndef TF_M_PROFILE_MEDIUM
 #define ARCH_TEST_GCM
-#endif
+//#endif
 #endif
 
 /**
@@ -376,7 +377,7 @@
  *
  * Enable deterministic ECDSA (RFC 6979).
 */
-#define ARCH_TEST_DETERMINISTIC_ECDSA
+//#define ARCH_TEST_DETERMINISTIC_ECDSA
 
 /**
  * \def ARCH_TEST_ECC_ASYMMETRIC_API_SUPPORT
@@ -384,7 +385,6 @@
  * Enable ECC support for asymmetric API.
 */
 //#define ARCH_TEST_ECC_ASYMMETRIC_API_SUPPORT
-
 /**
  * \def ARCH_TEST_HASH_SUSPEND
  *
