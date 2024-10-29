@@ -24,7 +24,7 @@
 **/
 void pal_uart_init(uint32_t uart_base_addr)
 {
-    pal_uart_cmsdk_init(uart_base_addr);
+    pal_uart_ra6m4_init(uart_base_addr);
 }
 
 /**
@@ -35,7 +35,7 @@ void pal_uart_init(uint32_t uart_base_addr)
 
 void pal_print(const char *str, int32_t data)
 {
-  pal_cmsdk_print(str,data);
+  pal_ra6m4_print(str,data);
 
 }
 
@@ -50,7 +50,7 @@ void pal_print(const char *str, int32_t data)
 **/
 int pal_nvmem_write(addr_t base, uint32_t offset, void *buffer, int size)
 {
-    return nvmem_write(base, offset, buffer, size);
+    return nvmem_ra6m4_write(base, offset, buffer, size);
 }
 
 /**
@@ -63,7 +63,7 @@ int pal_nvmem_write(addr_t base, uint32_t offset, void *buffer, int size)
 **/
 int pal_nvmem_read(addr_t base, uint32_t offset, void *buffer, int size)
 {
-    return nvmem_read(base, offset, buffer, size);
+    return nvmem_ra6m4_read(base, offset, buffer, size);
 }
 
 
@@ -118,7 +118,7 @@ int pal_wd_timer_is_enabled(addr_t base_addr)
 **/
 void pal_generate_interrupt(void)
 {
-    pal_uart_cmsdk_generate_irq();
+    pal_uart_ra6m4_generate_irq();
 }
 
 /**
@@ -128,5 +128,5 @@ void pal_generate_interrupt(void)
 **/
 void pal_disable_interrupt(void)
 {
-    pal_uart_cmsdk_disable_irq();
+    pal_uart_ra6m4_disable_irq();
 }
