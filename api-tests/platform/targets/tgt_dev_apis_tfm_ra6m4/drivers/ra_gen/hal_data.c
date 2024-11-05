@@ -1,27 +1,5 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
-static const flash_api_t g_flash2_nsc_api =
-{ .open = g_flash2_open_guard,
-  .write = g_flash2_write_guard,
-  .erase = g_flash2_erase_guard,
-  .blankCheck = g_flash2_blank_check_guard,
-  .close = g_flash2_close_guard,
-  .statusGet = g_flash2_status_get_guard,
-  .accessWindowSet = g_flash2_access_window_set_guard,
-  .accessWindowClear = g_flash2_access_window_clear_guard,
-  .idCodeSet = g_flash2_id_code_set_guard,
-  .reset = g_flash2_reset_guard,
-  .updateFlashClockFreq = g_flash2_update_flash_clock_freq_guard,
-  .startupAreaSelect = g_flash2_start_up_area_select_guard,
-  .callbackSet = g_flash2_callback_set_guard,
-  .bankSwap = g_flash2_bank_swap_guard,
-  .infoGet = g_flash2_info_get_guard,
-  .antiRollbackCounterIncrement = g_flash2_anti_rollback_counter_increment_guard,
-  .antiRollbackCounterRefresh = g_flash2_anti_rollback_counter_refresh_guard,
-  .antiRollbackCounterRead = g_flash2_anti_rollback_counter_read_guard,
-  .userLockableAreaWrite = g_flash2_user_lockable_area_write_guard, };
-const flash_instance_t g_flash2 =
-{ .p_api = &g_flash2_nsc_api, .p_ctrl = FSP_SECURE_ARGUMENT, .p_cfg = FSP_SECURE_ARGUMENT, };
 sci_uart_instance_ctrl_t g_uart0_ctrl;
 
 baud_setting_t g_uart0_baud_setting =
@@ -96,6 +74,28 @@ const uart_cfg_t g_uart0_cfg =
 /* Instance structure to use this module. */
 const uart_instance_t g_uart0 =
 { .p_ctrl = &g_uart0_ctrl, .p_cfg = &g_uart0_cfg, .p_api = &g_uart_on_sci };
+static const flash_api_t g_flash0_nsc_api =
+{ .open = g_flash0_open_guard,
+  .write = g_flash0_write_guard,
+  .erase = g_flash0_erase_guard,
+  .blankCheck = g_flash0_blank_check_guard,
+  .close = g_flash0_close_guard,
+  .statusGet = g_flash0_status_get_guard,
+  .accessWindowSet = g_flash0_access_window_set_guard,
+  .accessWindowClear = g_flash0_access_window_clear_guard,
+  .idCodeSet = g_flash0_id_code_set_guard,
+  .reset = g_flash0_reset_guard,
+  .updateFlashClockFreq = g_flash0_update_flash_clock_freq_guard,
+  .startupAreaSelect = g_flash0_start_up_area_select_guard,
+  .callbackSet = g_flash0_callback_set_guard,
+  .bankSwap = g_flash0_bank_swap_guard,
+  .infoGet = g_flash0_info_get_guard,
+  .antiRollbackCounterIncrement = g_flash0_anti_rollback_counter_increment_guard,
+  .antiRollbackCounterRefresh = g_flash0_anti_rollback_counter_refresh_guard,
+  .antiRollbackCounterRead = g_flash0_anti_rollback_counter_read_guard,
+  .userLockableAreaWrite = g_flash0_user_lockable_area_write_guard, };
+const flash_instance_t g_flash0 =
+{ .p_api = &g_flash0_nsc_api, .p_ctrl = FSP_SECURE_ARGUMENT, .p_cfg = FSP_SECURE_ARGUMENT, };
 void g_hal_init(void)
 {
     g_common_init ();

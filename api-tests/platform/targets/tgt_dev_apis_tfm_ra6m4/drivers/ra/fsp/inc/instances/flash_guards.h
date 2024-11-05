@@ -40,8 +40,6 @@
 
 #define FSP_GUARD_g_flash0_R_FLASH_HP_UserLockableAreaWrite(src_address, flash_address, num_bytes) g_flash0_user_lockable_area_write_guard(FSP_SECURE_ARGUMENT, src_address, flash_address, num_bytes)
 
-#define FSP_GUARD_g_flash0_R_FLASH_HP_Read(dest_address, flash_address, num_bytes) g_flash0_read_guard(dest_address, flash_address, num_bytes)
-
 extern BSP_CMSE_NONSECURE_ENTRY fsp_err_t g_flash0_open_guard(flash_ctrl_t *const p_api_ctrl, flash_cfg_t const *const p_cfg);
 
 extern BSP_CMSE_NONSECURE_ENTRY fsp_err_t g_flash0_write_guard(flash_ctrl_t *const p_api_ctrl, uint32_t const src_address,
@@ -94,3 +92,4 @@ extern BSP_CMSE_NONSECURE_ENTRY fsp_err_t g_flash0_user_lockable_area_write_guar
         uint32_t const src_address, uint32_t flash_address, uint32_t const num_bytes);
 
 extern BSP_CMSE_NONSECURE_ENTRY fsp_err_t g_flash0_read_guard(uint32_t dest_address, uint32_t const flash_address, uint32_t const num_bytes);
+       

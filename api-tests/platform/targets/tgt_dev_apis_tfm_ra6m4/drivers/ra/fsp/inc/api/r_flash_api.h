@@ -28,10 +28,6 @@
 /* Register definitions, common services and error codes. */
 #include "bsp_api.h"
 
-#if __has_include("r_flash_device_types.h")
-    #include "r_flash_device_types.h"
-#endif
-
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 

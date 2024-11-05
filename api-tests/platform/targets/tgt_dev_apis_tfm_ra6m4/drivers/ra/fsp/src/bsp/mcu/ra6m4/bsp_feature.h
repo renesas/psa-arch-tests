@@ -177,6 +177,7 @@
 #define BSP_FEATURE_CGC_ICLK_DIV_RESET                       (BSP_CLOCKS_SYS_CLOCK_DIV_4)
 #define BSP_FEATURE_CGC_LOCO_STABILIZATION_MAX_US            (61U)
 #define BSP_FEATURE_CGC_LOW_SPEED_MAX_FREQ_HZ                (1000000U) // This MCU does have Low Speed Mode, up to 1MHz
+#define BSP_FEATURE_CGC_LOW_SPEED_SUPPORT_MAIN_OSC           (1)
 #define BSP_FEATURE_CGC_LOW_VOLTAGE_MAX_FREQ_HZ              (0U)       // This MCU does not have Low Voltage Mode
 #define BSP_FEATURE_CGC_MIDDLE_SPEED_MAX_FREQ_HZ             (0U)       // This MCU does not have Middle Speed Mode
 #define BSP_FEATURE_CGC_MOCO_STABILIZATION_MAX_US            (15U)

@@ -42,10 +42,7 @@
  #pragma GCC diagnostic pop
 #endif
 
-#if __has_include("bsp_device_types.h")
-    #include "bsp_device_types.h"
-/* Use of BSP_API_OVERRIDE is deprecated. Replace with 'device_types' headers.*/
-#elif defined(BSP_API_OVERRIDE)
+#if defined(BSP_API_OVERRIDE)
  #include BSP_API_OVERRIDE
 #else
 

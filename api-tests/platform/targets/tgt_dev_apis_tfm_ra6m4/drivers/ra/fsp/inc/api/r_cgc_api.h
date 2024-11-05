@@ -33,10 +33,6 @@
 /* Includes board and MCU related header files. */
 #include "bsp_api.h"
 
-#if __has_include("r_cgc_device_types.h")
-    #include "r_cgc_device_types.h"
-#endif
-
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 

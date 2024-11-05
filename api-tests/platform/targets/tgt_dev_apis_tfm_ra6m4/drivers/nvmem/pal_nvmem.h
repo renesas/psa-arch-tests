@@ -23,7 +23,6 @@
 #include "stdint.h"
 
 /* Flash on Flash HP Instance */
-// extern const flash_instance_t g_flash2;
 
 int nvmem_ra6m4_write(addr_t base, uint32_t offset, void *buffer, int size);
 int nvmem_ra6m4_read(addr_t base, uint32_t offset, void *buffer, int size);

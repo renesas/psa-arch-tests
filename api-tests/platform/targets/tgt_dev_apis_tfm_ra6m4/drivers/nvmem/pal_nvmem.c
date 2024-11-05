@@ -66,8 +66,8 @@ int nvmem_ra6m4_read(addr_t base, uint32_t offset, void *buffer, int size)
     if (buffer == NULL) {
         return 0;
     }
-    memcpy((void *)buffer, (const void *)(base+offset), size);
-    // FSP_GUARD_g_flash0_R_FLASH_HP_Read((uint32_t)buffer, (const uint32_t)(base+offset), size);
+    // memcpy((void *)buffer, (const void *)(base+offset), size);
+    g_flash0_read_guard((uint32_t)buffer, (const uint32_t)(base+offset), size);
     return 1;
 }
 

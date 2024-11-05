@@ -7,6 +7,11 @@
 #ifndef BSP_MMF_H
 #define BSP_MMF_H
 
+/*******************************************************************************************************************//**
+ * @addtogroup BSP_MCU
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
@@ -52,7 +57,7 @@ typedef struct st_mmf_status
  **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
- * @brief   Get the current status of Memory Mirror.
+ *               Get the current status of Memory Mirror.
  *
  * @param[out]   p_mmf_status Pointer to instance which used for storing the state of MMF after invoked this function.
  *
@@ -86,7 +91,7 @@ __STATIC_INLINE fsp_err_t R_BSP_MemoryMirrorStatusGet (mmf_status_t * p_mmf_stat
 }
 
 /*******************************************************************************************************************//**
- * @brief   Set address for MMF region.
+ *              Set address for MMF region.
  *
  * @param[in]   addr Address of memory region to be mirrored into MMF region.
  *
@@ -132,3 +137,5 @@ __STATIC_INLINE fsp_err_t R_BSP_MemoryMirrorAddrSet (const uint32_t addr)
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 #endif
+
+/** @} (end addtogroup BSP_MCU) */

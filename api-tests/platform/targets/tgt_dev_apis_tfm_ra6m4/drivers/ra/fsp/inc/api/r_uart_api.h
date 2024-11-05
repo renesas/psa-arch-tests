@@ -33,10 +33,6 @@
 #include "bsp_api.h"
 #include "r_transfer_api.h"
 
-#if __has_include("r_uart_device_types.h")
-    #include "r_uart_device_types.h"
-#endif
-
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 

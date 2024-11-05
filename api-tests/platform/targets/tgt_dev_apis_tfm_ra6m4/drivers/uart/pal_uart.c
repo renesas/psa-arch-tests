@@ -35,7 +35,7 @@ void pal_uart_ra6m4_init(uint32_t uart_base_addr)
 {
 	ARG_UNUSED(uart_base_addr);
 
-    R_SCI_UART_Open(g_uart0.p_ctrl, g_uart0.p_cfg);
+    g_uart0.p_api->open(g_uart0.p_ctrl, g_uart0.p_cfg);
 
 }
 
@@ -60,7 +60,7 @@ void pal_uart_ra6m4_putc(uint8_t c)
     while (!pal_uart_ra6m4_is_tx_empty());
     tx_data_empty_test = 0U;
 
-    R_SCI_UART_Write(g_uart0.p_ctrl, &c, bytes);
+    g_uart0.p_api->write(g_uart0.p_ctrl, &c, bytes);
 	
 }
 
@@ -69,7 +69,7 @@ void pal_uart_ra6m4_putc(uint8_t c)
     @param    - str      : Input String
               - data     : Value for format specifier
 **/
-void pal_ra6m4_print(const char *str, int32_t data)
+void __attribute__((weak)) pal_ra6m4_print(const char *str, int32_t data)
 {
     uint8_t j, buffer[16];
     int8_t  i = 0, is_neg = 0, k = 2 * sizeof(data);
