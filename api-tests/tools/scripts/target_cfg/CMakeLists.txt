@@ -22,7 +22,17 @@ cmake_minimum_required(VERSION 3.10)
 cmake_policy(SET CMP0057 NEW)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../tools/cmake)
-include("common/CMakeSettings")
+# NOT common/CMakeSettings. This sub-project builds a HOST executable - it is compiled and
+# run on the build machine to emit target_database.h - and CMakeSettings is written for the
+# cross build: it sets CMAKE_C_COMPILER_ID_RUN and CMAKE_C_COMPILER_FORCED, which tell CMake
+# to skip compiler identification. With a host compiler that is not GCC-like, CMake then
+# falls back to generic rules and drives it with the wrong flags. On MSVC that is fatal:
+#     cl.exe ...\targetConfigGen.c.obj -o TargetConfigGen.exe
+#     cl : Command line warning D9035 : option 'o' has been deprecated
+#     LINK : fatal error LNK1181: cannot open input file '...targetConfigGen.c.obj'
+# Letting CMake identify the compiler here costs one identification step and makes the
+# generator build with whatever host toolchain is present. The cross build is untouched -
+# it includes CMakeSettings itself.
 include("common/Utils")
 
 # Causes toolchain to be re-evaluated
