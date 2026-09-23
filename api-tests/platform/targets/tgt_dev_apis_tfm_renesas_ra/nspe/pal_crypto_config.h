@@ -375,8 +375,15 @@
  * \def ARCH_TEST_DETERMINISTIC_ECDSA
  *
  * Enable deterministic ECDSA (RFC 6979).
+ *
+ * Not on Renesas RA builds whose secure image uses the SCE9 ECDSA accelerator: the engine
+ * draws its own nonce and FSP does not support deterministic ECDSA there, so the TF-M port
+ * removes PSA_ALG_DETERMINISTIC_ECDSA from the secure configuration and exports
+ * RENESAS_RA_NO_DETERMINISTIC_ECDSA to the NS build.
 */
+#ifndef RENESAS_RA_NO_DETERMINISTIC_ECDSA
 #define ARCH_TEST_DETERMINISTIC_ECDSA
+#endif
 
 /**
  * \def ARCH_TEST_ECC_ASYMMETRIC_API_SUPPORT
